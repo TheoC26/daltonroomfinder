@@ -20,9 +20,10 @@
 	import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 	import { onMount } from 'svelte';
 	import Slider from '$lib/components/Slider.svelte';
-	// import { selectedDateTime } from '$lib/stores/dateTime';
 	import { format } from 'date-fns';
 	import { selectedDate } from '$lib/state.svelte.js';
+	import SideCal from '$lib/components/SideCal.svelte';
+	import SideOpenRooms from '$lib/components/SideOpenRooms.svelte';
 
 	const DaltonFloors = [
 		{
@@ -266,7 +267,7 @@
 			]
 		}
 	];
-	let selectedFloorName = $state('5');
+	let selectedFloorName = $state('14');
 	let scrollContainer = null;
 	let floorContainers = [];
 	const floors = [
@@ -290,6 +291,7 @@
 
 	let showDatePicker = $state(false);
 	let showTimePicker = $state(false);
+	let floorScaler = $state(1);
 
 	function mapRange(value, fromMin, fromMax, toMin, toMax) {
 		return ((value - fromMin) * (toMax - toMin)) / (fromMax - fromMin) + toMin;
@@ -320,6 +322,11 @@
 	}
 
 	onMount(() => {
+		floorScaler = (window.innerWidth / 1420);
+		window.addEventListener('resize', () => {
+			floorScaler = (window.innerWidth / 1420);
+		});
+
 		gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 		// Create a master timeline
@@ -352,13 +359,13 @@
 					{
 						opacity: 1,
 						top: '0vh',
-						left: '50vw',
+						left: '40vw',
 						scale: 1
 					},
 					{
 						opacity: 0,
 						top: '-150vh',
-						left: '50vw',
+						left: '40vw',
 						scale: 1.5,
 						duration: 0.5,
 						ease: 'power1.out',
@@ -370,7 +377,7 @@
 				gsap.set(container, {
 					opacity: 0,
 					top: '100vh',
-					left: '50vw',
+					left: '40vw',
 					scale: 0.5
 				});
 			}
@@ -382,13 +389,13 @@
 					{
 						opacity: 0,
 						top: '100vh',
-						left: '50vw',
+						left: '40vw',
 						scale: 0.5
 					},
 					{
 						opacity: 1,
 						top: '0vh',
-						left: '50vw',
+						left: '40vw',
 						scale: 1,
 						duration: 0.5,
 						ease: 'power1.inOut',
@@ -414,7 +421,7 @@
 					{
 						opacity: 0,
 						top: '-150vh',
-						left: '50vw',
+						left: '40vw',
 						scale: 1.5,
 						duration: 0.5,
 						ease: 'power1.out'
@@ -458,11 +465,11 @@
 			{#each floors as floor, i}
 				<div
 					bind:this={floorContainers[i]}
-					class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+					class="fixed top-1/2 left-[40vw] -translate-x-1/2 -translate-y-1/2"
 					id="floor-{i}"
 					style="z-index: {floorContainers.length - i};"
 				>
-					<floor.component />
+					<floor.component scaler = {floorScaler} />
 				</div>
 			{/each}
 		</div>
@@ -541,4 +548,6 @@
 			{/if}
 		</div>
 	</div>
+	<SideOpenRooms />
+	<SideCal />
 </div>

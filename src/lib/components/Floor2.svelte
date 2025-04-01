@@ -2,12 +2,14 @@
 	function handleClick() {
 		console.log('Floor2');
 	}
+
+	let { scaler } = $props();
 </script>
 
 <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 	<svg
-		width="804"
-		height="480"
+		width={804*scaler}
+		height={480*scaler}
 		viewBox="0 0 804 480"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"

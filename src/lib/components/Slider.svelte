@@ -1,5 +1,4 @@
 <script>
-	import { selectedDateTime } from '$lib/stores/dateTime';
 	import { selectedDate } from '$lib/state.svelte.js';
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';

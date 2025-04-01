@@ -1,19 +1,29 @@
 <script>
-	function handleClick() {
-		console.log('Floor5');
+
+	import { sideCal, sideOpenRooms } from "$lib/state.svelte";
+
+	function handleClick(room) {
+		if (room == sideCal.room) {
+			sideCal.isShowing = !sideCal.isShowing;
+			sideOpenRooms.isShowing = !sideOpenRooms.isShowing;
+			return;
+		}
+		sideCal.room = room;
 	}
+
+	let { scaler } = $props();
 </script>
 
 <div class="fixed left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2">
 	<svg
-		width="804"
-		height="480"
+		width={804*scaler}
+		height={480*scaler}
 		viewBox="0 0 804 480"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 	>
 		<rect x="6" y="5.5" width="793" height="470" fill="white" />
-		<rect x="640" y="281.5" width="160" height="194" fill="#F0CBCB"/>
+		<rect x="640" y="281.5" width="160" height="194" fill="#E1F9D6" class="cursor-pointer" onclick={() => handleClick(512)}/>
 		<rect x="734" y="191.5" width="61" height="98" fill="white" />
 		<rect x="96" y="5.5" width="68" height="195" fill="#F0CBCB" />
 		<rect x="5" y="281.5" width="159" height="194" fill="#F0CBCB" />

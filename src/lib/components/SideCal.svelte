@@ -57,6 +57,7 @@
 
 	function closeCal() {
 		sideCal.isShowing = false;
+		sideOpenRooms.isShowing = true;
 	}
 </script>
 

@@ -1,6 +1,5 @@
 import { google } from 'googleapis';
-import fs from 'fs';
-import path from 'path';
+import { supabase } from '$lib/supabase';
 
 const roomToColumnKey = {
 	203: 'A',
@@ -47,23 +46,20 @@ const roomToColumnKey = {
 	Theatre: 'AP'
 };
 
-const CACHE_FILE = path.resolve('room-data-cache.json');
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 // Check if cache is valid
-function isCacheValid() {
-	// return false;
+async function isCacheValid() {
 	try {
-		if (!fs.existsSync(CACHE_FILE)) {
+		const { data, error } = await supabase.from('room_cache').select('updated_at').single();
+
+		if (error || !data) {
 			return false;
 		}
 
-		const stats = fs.statSync(CACHE_FILE);
-		const cacheAge = Date.now() - stats.mtimeMs;
-
-		// Only use cache if it's from the current hour (rounded down)
+		const cacheTimestamp = new Date(data.updated_at).getTime();
 		const currentHourTimestamp = Math.floor(Date.now() / CACHE_DURATION) * CACHE_DURATION;
-		const cacheHourTimestamp = Math.floor(stats.mtimeMs / CACHE_DURATION) * CACHE_DURATION;
+		const cacheHourTimestamp = Math.floor(cacheTimestamp / CACHE_DURATION) * CACHE_DURATION;
 
 		return currentHourTimestamp === cacheHourTimestamp;
 	} catch (error) {
@@ -73,10 +69,15 @@ function isCacheValid() {
 }
 
 // Read data from cache
-function readCache() {
+async function readCache() {
 	try {
-		const cacheData = fs.readFileSync(CACHE_FILE, 'utf8');
-		return JSON.parse(cacheData);
+		const { data, error } = await supabase.from('room_cache').select('data').single();
+
+		if (error || !data) {
+			return null;
+		}
+
+		return data.data;
 	} catch (error) {
 		console.error('Error reading cache:', error);
 		return null;
@@ -84,9 +85,17 @@ function readCache() {
 }
 
 // Write data to cache
-function writeCache(data) {
+async function writeCache(data) {
 	try {
-		fs.writeFileSync(CACHE_FILE, JSON.stringify(data));
+		const { error } = await supabase.from('room_cache').upsert({
+			id: 1, // We'll use a single row for the cache
+			data: data,
+			updated_at: new Date().toISOString()
+		});
+
+		if (error) {
+			console.error('Error writing cache:', error);
+		}
 	} catch (error) {
 		console.error('Error writing cache:', error);
 	}
@@ -127,9 +136,9 @@ function extractEventsFromCell(cellValue) {
 
 export const load = async () => {
 	// Check if we have valid cached data
-	if (isCacheValid()) {
+	if (await isCacheValid()) {
 		console.log('Using cached room data');
-		const cachedData = readCache();
+		const cachedData = await readCache();
 		if (cachedData) {
 			return cachedData;
 		}
@@ -231,16 +240,11 @@ export const load = async () => {
 			rooms: roomData,
 			freeRooms: freeRooms
 		};
-		writeCache(result);
-
-		// Also write to a JSON file for external use
-		fs.writeFileSync('room-data.json', JSON.stringify(result, null, 2));
+		await writeCache(result);
 
 		return result;
 	} catch (error) {
 		console.error('Error fetching sheet data:', error);
-
-		// Return empty data structure on error
 		return { rooms: {} };
 	}
 };

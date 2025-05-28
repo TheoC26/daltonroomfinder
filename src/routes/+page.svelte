@@ -553,14 +553,15 @@
 		</div>
 	</div>
 
-	<div class="fixed top-1/2 left-2 sm:left-6 flex -translate-y-1/2 flex-col">
+	<div class="fixed top-1/2 left-2 flex -translate-y-1/2 flex-col sm:left-6">
 		{#each floors as floor, i}
 			{#if floor.name === selectedFloorName}
-				<div class="text-center text-xl sm:text-2xl font-bold">{floor.name}</div>
+				<div class="text-center text-xl font-bold sm:text-2xl">{floor.name}</div>
 			{:else}
 				<button
 					onclick={() => scrollToFloor(floor.name)}
-					class="cursor-pointer text-center text-xl sm:text-2xl font-light opacity-50">{floor.name}</button
+					class="cursor-pointer text-center text-xl font-light opacity-50 sm:text-2xl"
+					>{floor.name}</button
 				>
 			{/if}
 		{/each}

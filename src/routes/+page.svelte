@@ -15,15 +15,52 @@
 	import Floor2 from '$lib/components/Floor2.svelte';
 	import Floor1 from '$lib/components/Floor1.svelte';
 	import FloorB from '$lib/components/FloorB.svelte';
+	import EmptyFloor from '$lib/components/EmptyFloor.svelte';
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 	import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 	import { onMount } from 'svelte';
 	import Slider from '$lib/components/Slider.svelte';
 	import { format } from 'date-fns';
-	import { selectedDate } from '$lib/state.svelte.js';
+	import { selectedDate, roomData, sideCal, sideOpenRooms } from '$lib/state.svelte';
 	import SideCal from '$lib/components/SideCal.svelte';
 	import SideOpenRooms from '$lib/components/SideOpenRooms.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+
+	// create a state variable evetns
+	// const events = $state({
+	// 	events: []
+	// });
+
+	const handleVisibilityChange = () => {
+		if (document.visibilityState === 'visible') {
+			selectedDate.date = new Date(
+				new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+			);
+		}
+	};
+
+	const { data } = $props();
+
+	roomData.freeRooms = data.freeRooms;
+	roomData.rooms = data.rooms;
+
+	function handleRoomClick(room) {
+		if (room == sideCal.room) {
+			sideCal.isShowing = !sideCal.isShowing;
+			sideOpenRooms.isShowing = !sideOpenRooms.isShowing;
+			return;
+		}
+		sideCal.room = room;
+		sideCal.isShowing = true;
+		sideOpenRooms.isShowing = false;
+	}
+
+	$effect(() => {
+		if (roomData.rooms[sideCal.room]) {
+			console.log('sideCal.room', sideCal.room, sideCal.isShowing);
+		}
+	});
 
 	const DaltonFloors = [
 		{
@@ -277,15 +314,15 @@
 		{ component: Floor11, name: '11', scrollPercent: 1233.8 / 4531.66 },
 		{ component: Floor10M, name: '10M', scrollPercent: 1505 / 4531.66 },
 		{ component: Floor10, name: '10', scrollPercent: 1756 / 4531.66 },
-		{ component: Floor9, name: '9', scrollPercent: 2010 / 4531.66 },
-		{ component: Floor8, name: '8', scrollPercent: 2261.1 / 4531.66 },
-		{ component: Floor7, name: '7', scrollPercent: 2517.2 / 4531.66 },
-		{ component: Floor6, name: '6', scrollPercent: 2770 / 4531.66 },
+		{ component: EmptyFloor, name: '9', scrollPercent: 2010 / 4531.66 },
+		{ component: EmptyFloor, name: '8', scrollPercent: 2261.1 / 4531.66 },
+		{ component: EmptyFloor, name: '7', scrollPercent: 2517.2 / 4531.66 },
+		{ component: EmptyFloor, name: '6', scrollPercent: 2770 / 4531.66 },
 		{ component: Floor5, name: '5', scrollPercent: 3023 / 4531.66 },
 		{ component: Floor4, name: '4', scrollPercent: 3271.6 / 4531.66 },
-		{ component: Floor3, name: '3', scrollPercent: 3519.4 / 4531.66 },
+		{ component: EmptyFloor, name: '3', scrollPercent: 3519.4 / 4531.66 },
 		{ component: Floor2, name: '2', scrollPercent: 3782.2 / 4531.66 },
-		{ component: Floor1, name: '1', scrollPercent: 4026.1 / 4531.66 },
+		{ component: EmptyFloor, name: '1', scrollPercent: 4026.1 / 4531.66 },
 		{ component: FloorB, name: 'B', scrollPercent: 1 }
 	];
 
@@ -313,6 +350,17 @@
 		showDatePicker = false;
 	}
 
+	function isRoomOccupied(roomId, date) {
+		const room = roomData.rooms[roomId];
+		if (!room) return false;
+
+		return room.events.some((event) => {
+			const startTime = new Date(event.start.dateTime);
+			const endTime = new Date(event.end.dateTime);
+			return date >= startTime && date <= endTime;
+		});
+	}
+
 	function updateTime(event) {
 		const [hours, minutes] = event.target.value.split(':');
 		const newDate = new Date(selectedDate.date);
@@ -321,11 +369,39 @@
 		showTimePicker = false;
 	}
 
-	onMount(() => {
-		floorScaler = (window.innerWidth / 1420);
-		window.addEventListener('resize', () => {
-			floorScaler = (window.innerWidth / 1420);
+	// any time selectedDate changes
+	$effect(() => {
+		if (!roomData.rooms || !selectedDate) return;
+		Object.entries(roomData.rooms).forEach(([roomId, data]) => {
+			const room = roomData.rooms[roomId];
+			let occupied = false;
+			if (room) {
+				room.events.forEach((event) => {
+					const startTime = new Date(event.start.dateTime);
+					const endTime = new Date(event.end.dateTime);
+					if (selectedDate.date >= startTime && selectedDate.date <= endTime) {
+						occupied = true;
+						return;
+					}
+				});
+			}
+			roomData.rooms[roomId].isOccupied = occupied;
 		});
+		console.log(roomData.rooms[1401]);
+	});
+
+	onMount(() => {
+		// show scrollContainer
+		console.log(scrollContainer);
+		scrollContainer.classList.remove('hidden');
+
+		floorScaler = window.innerWidth / 1420;
+		window.addEventListener('resize', () => {
+			floorScaler = window.innerWidth / 1420;
+		});
+
+		// if width is less than 1024, make the left 50vw
+		const leftPosition = window.innerWidth < 1024 ? '50vw' : '40vw';
 
 		gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -340,7 +416,7 @@
 				pinSpacing: true,
 				onUpdate: (self) => {
 					// print the y scroll amount
-				},
+				}
 				// markers: true
 			}
 		});
@@ -359,13 +435,13 @@
 					{
 						opacity: 1,
 						top: '0vh',
-						left: '40vw',
+						left: leftPosition,
 						scale: 1
 					},
 					{
 						opacity: 0,
 						top: '-150vh',
-						left: '40vw',
+						left: leftPosition,
 						scale: 1.5,
 						duration: 0.5,
 						ease: 'power1.out',
@@ -377,7 +453,7 @@
 				gsap.set(container, {
 					opacity: 0,
 					top: '100vh',
-					left: '40vw',
+					left: leftPosition,
 					scale: 0.5
 				});
 			}
@@ -389,13 +465,13 @@
 					{
 						opacity: 0,
 						top: '100vh',
-						left: '40vw',
+						left: leftPosition,
 						scale: 0.5
 					},
 					{
 						opacity: 1,
 						top: '0vh',
-						left: '40vw',
+						left: leftPosition,
 						scale: 1,
 						duration: 0.5,
 						ease: 'power1.inOut',
@@ -421,7 +497,7 @@
 					{
 						opacity: 0,
 						top: '-150vh',
-						left: '40vw',
+						left: leftPosition,
 						scale: 1.5,
 						duration: 0.5,
 						ease: 'power1.out'
@@ -459,8 +535,10 @@
 	}
 </script>
 
+<svelte:document on:visibilitychange={handleVisibilityChange} />
+
 <div>
-	<div class="" bind:this={scrollContainer}>
+	<div class="hidden" bind:this={scrollContainer}>
 		<div class="floors-container">
 			{#each floors as floor, i}
 				<div
@@ -469,20 +547,20 @@
 					id="floor-{i}"
 					style="z-index: {floorContainers.length - i};"
 				>
-					<floor.component scaler = {floorScaler} />
+					<floor.component scaler={floorScaler} {handleRoomClick} />
 				</div>
 			{/each}
 		</div>
 	</div>
 
-	<div class="fixed top-1/2 left-6 flex -translate-y-1/2 flex-col">
+	<div class="fixed top-1/2 left-2 sm:left-6 flex -translate-y-1/2 flex-col">
 		{#each floors as floor, i}
 			{#if floor.name === selectedFloorName}
-				<div class="text-center text-2xl font-bold">{floor.name}</div>
+				<div class="text-center text-xl sm:text-2xl font-bold">{floor.name}</div>
 			{:else}
 				<button
 					onclick={() => scrollToFloor(floor.name)}
-					class="cursor-pointer text-center text-2xl font-light opacity-50">{floor.name}</button
+					class="cursor-pointer text-center text-xl sm:text-2xl font-light opacity-50">{floor.name}</button
 				>
 			{/if}
 		{/each}
@@ -492,7 +570,7 @@
 	<header
 		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-6 pt-4"
 	>
-		<img class="h-8" src="DaltonLogo.png" alt="Dalton Logo" />
+		<img class="h-5 sm:h-8" src="DaltonLogo.png" alt="Dalton Logo" />
 		<div class="flex flex-col text-base">
 			<div class="flex items-center gap-4">
 				<div class="h-4 w-10 rounded-sm bg-[#F0CBCB]"></div>
@@ -532,7 +610,7 @@
 		</div>
 		<div class="h-2 w-0.5 rounded-full bg-black"></div>
 
-		<div class="relative">
+		<!-- <div class="relative">
 			<button class="cursor-pointer text-xl" onclick={() => (showDatePicker = !showDatePicker)}>
 				{formatDate(selectedDate.date)}
 			</button>
@@ -546,8 +624,9 @@
 					onkeydown={(e) => e.preventDefault()}
 				/>
 			{/if}
-		</div>
+		</div> -->
 	</div>
 	<SideOpenRooms />
 	<SideCal />
+	<Footer />
 </div>

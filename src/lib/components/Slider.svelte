@@ -25,7 +25,6 @@
 		// Calculate initial position based on current time
 		const date = selectedDate.date;
 		const totalMinutes = date.getHours() * 60 + date.getMinutes();
-		console.log('totalMinutes', totalMinutes);
 		const initialX = mapRange(totalMinutes, 10, 1430, 300, -1122);
 
 		gsap.set(sliderContainer, { x: `${initialX}px` });

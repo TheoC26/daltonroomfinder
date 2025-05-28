@@ -12,4 +12,9 @@
 	let { children } = $props();
 </script>
 
+<svelte:head>
+	<title>Dalton Room Finder</title>
+	<meta property="description" content="Find empty rooms at Dalton!" />
+</svelte:head>
+
 {@render children()}

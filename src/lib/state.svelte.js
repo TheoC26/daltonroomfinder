@@ -4,6 +4,11 @@ export const selectedDate = $state({
 	date: now
 });
 
+export const roomData = $state({
+	rooms: {},
+	freeRooms: []
+});
+
 export const sideCal = $state({
 	room: 1401,
 	isShowing: false

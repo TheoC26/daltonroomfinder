@@ -5,7 +5,6 @@
 	function openRoomCalendar(room) {
 		sideCal.room = room;
 		sideCal.isShowing = true;
-		sideOpenRooms.isShowing = false;
 	}
 
     function closeSideOpenRooms() {
@@ -17,10 +16,10 @@
 </script>
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
-<button class="fixed block lg:hidden right-3 top-24 rounded-lg bg-[#E1F9D6] px-3 py-1 cursor-pointer" onclick={openSideOpenRooms}>Show Current Available Rooms</button>
+<button class="fixed block lg:hidden right-3 top-16 rounded-lg bg-[#E1F9D6] px-3 py-1 cursor-pointer" onclick={openSideOpenRooms}>Show Current Available Rooms</button>
 
 <div
-	class="fixed top-32 right-5 bottom-32 z-40 w-[19rem] scale-100 overflow-hidden rounded-xl backdrop-blur-md transition-all lg:block {sideOpenRooms.isShowing
+	class="fixed top-32 right-5 bottom-32 z-40 w-[19rem] scale-100 overflow-hidden rounded-xl backdrop-blur-md transition-all lg:opacity-100 lg:block {sideOpenRooms.isShowing
 		? 'right-5 scale-100 opacity-100 block'
 		: 'right-0 scale-95 opacity-0 hidden'}"
 >

@@ -15,5 +15,5 @@ export const sideCal = $state({
 });
 
 export const sideOpenRooms = $state({
-	isShowing: true
+	isShowing: false
 });

@@ -48,12 +48,10 @@
 	function handleRoomClick(room) {
 		if (room == sideCal.room) {
 			sideCal.isShowing = !sideCal.isShowing;
-			sideOpenRooms.isShowing = !sideOpenRooms.isShowing;
 			return;
 		}
 		sideCal.room = room;
 		sideCal.isShowing = true;
-		sideOpenRooms.isShowing = false;
 	}
 
 	$effect(() => {
@@ -553,7 +551,7 @@
 		</div>
 	</div>
 
-	<div class="fixed top-1/2 left-2 flex -translate-y-1/2 flex-col sm:left-6">
+	<div class="fixed top-1/2 left-0 flex -translate-y-1/2 flex-col sm:left-6">
 		{#each floors as floor, i}
 			{#if floor.name === selectedFloorName}
 				<div class="text-center text-xl font-bold sm:text-2xl">{floor.name}</div>
@@ -569,16 +567,16 @@
 	</div>
 
 	<header
-		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-6 pt-4"
+		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-3 pt-2 sm:p-6 sm:pt-4"
 	>
-		<img class="h-5 sm:h-8" src="DaltonLogo.png" alt="Dalton Logo" />
-		<div class="flex flex-col text-base">
+		<img class="h-4 sm:h-8" src="DaltonLogo.png" alt="Dalton Logo" />
+		<div class="flex flex-col text-sm sm:text-base">
 			<div class="flex items-center gap-4">
-				<div class="h-4 w-10 rounded-sm bg-[#F0CBCB]"></div>
+				<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#F0CBCB]"></div>
 				<div>Occupied</div>
 			</div>
 			<div class="flex items-center gap-4">
-				<div class="h-4 w-10 rounded-sm bg-[#E1F9D6]"></div>
+				<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#E1F9D6]"></div>
 				<div>Free</div>
 			</div>
 		</div>
@@ -588,7 +586,12 @@
 		class="fixed right-0 bottom-0 left-0 flex w-full flex-col items-center justify-between bg-linear-to-t from-white via-white to-transparent p-6 pt-16 pb-4"
 	>
 		<div class="relative">
-			<button class="text-xl">
+			<button class="text-xl cursor-pointer" onclick={() => {
+				// set time to current time
+				selectedDate.date = new Date(
+					new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+				);
+			}}>
 				{formatTime(selectedDate.date)}
 			</button>
 			{#if showTimePicker}

@@ -1,5 +1,5 @@
 <script>
-	import Floor14 from '$lib/components/Floor14.svelte';
+	import Floor14 from '$lib/components/Floor14New.svelte';
 	import Floor13 from '$lib/components/Floor13.svelte';
 	import Floor12 from '$lib/components/Floor12.svelte';
 	import Floor11 from '$lib/components/Floor11.svelte';
@@ -9,7 +9,7 @@
 	import Floor8 from '$lib/components/Floor8.svelte';
 	import Floor7 from '$lib/components/Floor7.svelte';
 	import Floor6 from '$lib/components/Floor6.svelte';
-	import Floor5 from '$lib/components/Floor5.svelte';
+	import Floor5 from '$lib/components/Floor5New.svelte';
 	import Floor4 from '$lib/components/Floor4.svelte';
 	import Floor3 from '$lib/components/Floor3.svelte';
 	import Floor2 from '$lib/components/Floor2.svelte';

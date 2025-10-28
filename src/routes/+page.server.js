@@ -35,8 +35,8 @@ const roomToColumnKey = {
 	1404: 'AE',
 	1405: 'AF',
 	1406: 'AG',
-	1407: 'AH',
-	1409: 'AI',
+	// 1407: 'AH',
+	// 1409: 'AI',
 	'10M': 'AJ',
 	B02: 'AK',
 	B03: 'AL',
@@ -50,6 +50,7 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 // Check if cache is valid
 async function isCacheValid() {
+	// return false;
 	try {
 		const { data, error } = await supabase.from('room_cache').select('updated_at').single();
 

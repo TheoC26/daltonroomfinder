@@ -126,13 +126,13 @@
         <div class="view-toggle">
           <button
             class:active={viewMode === 'grid'}
-            on:click={() => viewMode = 'grid'}
+            onclick={() => viewMode = 'grid'}
           >
             Grid View
           </button>
           <button
             class:active={viewMode === 'list'}
-            on:click={() => viewMode = 'list'}
+            onclick={() => viewMode = 'list'}
           >
             List View
           </button>
@@ -150,7 +150,7 @@
           <div 
             class="room-card {status}"
             class:selected={selectedRoom === roomId}
-            on:click={() => selectedRoom = roomId}
+            onclick={() => selectedRoom = roomId}
           >
             <h2>Room {roomId}</h2>
             <div class="status-indicator">
@@ -213,7 +213,7 @@
               <tr 
                 class="room-row {status}"
                 class:selected={selectedRoom === roomId}
-                on:click={() => selectedRoom = roomId}
+                onclick={() => selectedRoom = roomId}
               >
                 <td><strong>Room {roomId}</strong></td>
                 <td>

@@ -14,9 +14,20 @@ export async function GET({ url, locals }) {
             throw redirect(302, '/login?error=auth_error');
         }
         
-        // Check if the user has a valid Dalton email
-        if (data.user && data.user.email?.endsWith('@dalton.org')) {
-            // Valid Dalton user, redirect to home
+        // Get authenticated user data (more secure than using data.user from session)
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError) {
+            console.error('Error getting user after auth:', userError);
+            throw redirect(302, '/login?error=user_error');
+        }
+        
+        // Check if the user has a valid email (Dalton domain or test email)
+        const hasValidEmail = user?.email?.endsWith('@dalton.org') || 
+                             user?.email === 'theo.htf.chan@gmail.com';
+        
+        if (user && hasValidEmail) {
+            // Valid user, redirect to home
             throw redirect(302, '/');
         } else {
             // Invalid email, redirect to unauthorized page

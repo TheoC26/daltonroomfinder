@@ -8,20 +8,33 @@ export const isLoading = writable(true);
 // Initialize authentication state
 export async function initializeAuth() {
     try {
-        // Get current session
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // Get authenticated user data (more secure than using session.user)
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser();
         
         if (error) {
-            console.error('Error getting session:', error);
+            console.error('Error getting user:', error);
             user.set(null);
         } else {
-            user.set(session?.user || null);
+            user.set(currentUser);
         }
         
         // Listen for auth state changes
-        supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth state changed:', event, session?.user?.email);
-            user.set(session?.user || null);
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth state changed:', event);
+            
+            // Get fresh user data on auth state change
+            if (session) {
+                const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
+                if (userError) {
+                    console.error('Error getting user on auth change:', userError);
+                    user.set(null);
+                } else {
+                    console.log('User authenticated:', freshUser?.email);
+                    user.set(freshUser);
+                }
+            } else {
+                user.set(null);
+            }
             isLoading.set(false);
         });
         
@@ -67,9 +80,11 @@ export async function signOut() {
     }
 }
 
-// Check if user has valid Dalton email
+// Check if user has valid email (Dalton domain or test email)
 export function hasValidDaltonEmail(user) {
-    return user?.email?.endsWith('@dalton.org') || false;
+    return user?.email?.endsWith('@dalton.org') || 
+           user?.email === 'theo.htf.chan@gmail.com' || 
+           false;
 }
 
 // Get user's authentication status

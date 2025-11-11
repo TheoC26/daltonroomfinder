@@ -44,7 +44,9 @@
 	async function handleSignOut() {
 		try {
 			await signOut();
-			// Redirect will happen automatically via hooks
+
+			// redirect
+			window.location.href = '/login';
 		} catch (error) {
 			console.error('Sign out error:', error);
 		}
@@ -577,9 +579,27 @@
 	</div>
 
 	<header
-		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-3 pt-2 sm:p-6 sm:pt-4 z-50"
+		class="fixed top-0 right-0 left-0 flex w-full items-center group justify-between bg-linear-to-b from-white via-white to-transparent p-3 pt-2 sm:p-6 sm:pt-4 z-50"
 	>
+	<div>
+
 		<img class="h-4 sm:h-8" src="DaltonLogo.png" alt="Dalton Logo" />
+		<!-- User Info and Logout -->
+			{#if $user}
+				<div class="flex absolute -bottom-3 sm:-bottom-1 items-center gap-2 mt-1 text-sm">
+					<div class="hidden sm:block text-gray-600">
+						{$user.email}
+					</div>
+					<button
+						onclick={handleSignOut}
+						class="bg-red-300 transition-all mt-10 sm:mt-0 sm:opacity-0 group-hover:opacity-100 text-black cursor-pointer px-3 py-1 rounded-lg text-sm transition-colors"
+						title="Sign Out"
+					>
+						Sign Out
+					</button>
+				</div>
+			{/if}
+	</div>
 		
 		<div class="flex items-center gap-4 sm:gap-6">
 			<!-- Room Status Legend -->
@@ -593,22 +613,6 @@
 					<div>Free</div>
 				</div>
 			</div>
-			
-			<!-- User Info and Logout -->
-			{#if $user}
-				<div class="flex items-center gap-2 text-sm">
-					<div class="hidden sm:block text-gray-600">
-						{$user.email}
-					</div>
-					<button
-						on:click={handleSignOut}
-						class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm transition-colors"
-						title="Sign Out"
-					>
-						Sign Out
-					</button>
-				</div>
-			{/if}
 		</div>
 	</header>
 

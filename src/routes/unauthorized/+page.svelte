@@ -49,7 +49,7 @@
         </p>
         
         <button
-            on:click={handleSignOut}
+            onclick={handleSignOut}
             disabled={loading}
             class="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
         >

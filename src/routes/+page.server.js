@@ -50,7 +50,8 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 // Check if cache is valid
 async function isCacheValid() {
-	// return false;
+	// NEED TO CHANGE
+	return false;
 	try {
 		const { data, error } = await supabase.from('room_cache').select('updated_at').single();
 

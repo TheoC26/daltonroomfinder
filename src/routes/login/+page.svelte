@@ -41,7 +41,7 @@
         
         <!-- Google Sign In Button -->
         <button
-            on:click={handleGoogleSignIn}
+            onclick={handleGoogleSignIn}
             disabled={loading}
             class="w-full bg-white border-2 border-gray-300 rounded-lg px-6 py-4 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
         >

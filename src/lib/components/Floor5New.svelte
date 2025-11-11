@@ -9,7 +9,7 @@
 	let color503 = $state('#E1F9D6');
 	let color504 = $state('#E1F9D6');
 	let color505 = $state('#E1F9D6');
-	let color507 = $state('#E1F9D6');
+	let color509 = $state('#E1F9D6');
 
 	$effect(() => {
 		if (!roomData.rooms) return;
@@ -18,9 +18,9 @@
 		color503 = roomData.rooms[503].isOccupied ? '#F0CBCB' : '#E1F9D6';
 		color504 = roomData.rooms[504].isOccupied ? '#F0CBCB' : '#E1F9D6';
 		color505 = roomData.rooms[505].isOccupied ? '#F0CBCB' : '#E1F9D6';
-		color507 = roomData.rooms[507].isOccupied ? '#F0CBCB' : '#E1F9D6';
+		color509 = roomData.rooms[509].isOccupied ? '#F0CBCB' : '#E1F9D6';
 	});
-	// 501, 502, 504, 505, 507, 503
+	// 501, 502, 504, 505, 509, 503
 </script>
 
 <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -39,7 +39,7 @@
 <rect x="733.5" y="225.938" width="61" height="85.9441" fill="white"/>
 <rect x="5" y="304.866" width="184" height="170.134" fill="#E0E0E0"/>
 <rect x="337" y="305.116" width="157" height="170.134" fill={color505} class="cursor-pointer outline-none" onkeydown={(e) => e.key === 'Enter' && handleRoomClick(505)} tabindex="0" role="button" onclick={() => handleRoomClick(505)} />
-<rect x="189" y="305.116" width="148" height="170.134" fill={color507} class="cursor-pointer outline-none" onkeydown={(e) => e.key === 'Enter' && handleRoomClick(507)} tabindex="0" role="button" onclick={() => handleRoomClick(507)} />
+<rect x="189" y="305.116" width="148" height="170.134" fill={color509} class="cursor-pointer outline-none" onkeydown={(e) => e.key === 'Enter' && handleRoomClick(509)} tabindex="0" role="button" onclick={() => handleRoomClick(509)} />
 <rect x="494" y="305.116" width="142" height="170.134" fill={color503} class="cursor-pointer outline-none" onkeydown={(e) => e.key === 'Enter' && handleRoomClick(503)} tabindex="0" role="button" onclick={() => handleRoomClick(503)} />
 <rect x="5" y="4.93848" width="233" height="57.8807" fill="#E0E0E0"/>
 <rect x="636" y="62.8193" width="75" height="110.5" fill="#E0E0E0"/>

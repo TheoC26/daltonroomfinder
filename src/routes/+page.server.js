@@ -17,7 +17,7 @@ const roomToColumnKey = {
 	503: 'M',
 	504: 'N',
 	505: 'O',
-	507: 'P',
+	509: 'P',
 	1001: 'Q',
 	1002: 'R',
 	1003: 'S',
@@ -135,7 +135,10 @@ function extractEventsFromCell(cellValue) {
 	return events;
 }
 
-export const load = async () => {
+export const load = async ({ locals }) => {
+	// Authentication is handled in hooks.server.js
+	// This function will only run for authenticated users with valid @dalton.org emails
+	
 	// Check if we have valid cached data
 	if (await isCacheValid()) {
 		console.log('Using cached room data');

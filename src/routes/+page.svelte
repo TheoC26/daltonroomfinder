@@ -26,6 +26,7 @@
 	import SideCal from '$lib/components/SideCal.svelte';
 	import SideOpenRooms from '$lib/components/SideOpenRooms.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { user, signOut } from '$lib/auth.js';
 
 	// create a state variable evetns
 	// const events = $state({
@@ -39,6 +40,15 @@
 			);
 		}
 	};
+
+	async function handleSignOut() {
+		try {
+			await signOut();
+			// Redirect will happen automatically via hooks
+		} catch (error) {
+			console.error('Sign out error:', error);
+		}
+	}
 
 	const { data } = $props();
 
@@ -567,18 +577,38 @@
 	</div>
 
 	<header
-		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-3 pt-2 sm:p-6 sm:pt-4"
+		class="fixed top-0 right-0 left-0 flex w-full items-center justify-between bg-linear-to-b from-white via-white to-transparent p-3 pt-2 sm:p-6 sm:pt-4 z-50"
 	>
 		<img class="h-4 sm:h-8" src="DaltonLogo.png" alt="Dalton Logo" />
-		<div class="flex flex-col text-sm sm:text-base">
-			<div class="flex items-center gap-4">
-				<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#F0CBCB]"></div>
-				<div>Occupied</div>
+		
+		<div class="flex items-center gap-4 sm:gap-6">
+			<!-- Room Status Legend -->
+			<div class="flex flex-col text-sm sm:text-base">
+				<div class="flex items-center gap-4">
+					<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#F0CBCB]"></div>
+					<div>Occupied</div>
+				</div>
+				<div class="flex items-center gap-4">
+					<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#E1F9D6]"></div>
+					<div>Free</div>
+				</div>
 			</div>
-			<div class="flex items-center gap-4">
-				<div class="h-3 w-10 sm:h-4 rounded-sm bg-[#E1F9D6]"></div>
-				<div>Free</div>
-			</div>
+			
+			<!-- User Info and Logout -->
+			{#if $user}
+				<div class="flex items-center gap-2 text-sm">
+					<div class="hidden sm:block text-gray-600">
+						{$user.email}
+					</div>
+					<button
+						on:click={handleSignOut}
+						class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm transition-colors"
+						title="Sign Out"
+					>
+						Sign Out
+					</button>
+				</div>
+			{/if}
 		</div>
 	</header>
 

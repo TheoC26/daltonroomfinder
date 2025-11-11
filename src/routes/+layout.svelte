@@ -9,7 +9,22 @@
 	import '@fontsource/poppins/700.css';
 	import '@fontsource/poppins/800.css';
 	import '@fontsource/poppins/900.css';
-	let { children } = $props();
+	import { onMount } from 'svelte';
+	import { initializeAuth, user } from '$lib/auth.js';
+	import { supabase } from '$lib/supabase.js';
+	
+	let { children, data } = $props();
+	
+	// Initialize authentication on app startup
+	onMount(async () => {
+		// Set initial user state from server data
+		if (data.user) {
+			user.set(data.user);
+		}
+		
+		// Initialize auth listeners
+		await initializeAuth();
+	});
 </script>
 
 <svelte:head>
